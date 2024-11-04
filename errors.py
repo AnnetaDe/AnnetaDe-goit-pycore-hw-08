@@ -7,7 +7,6 @@ def input_error(func):
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-
         except ArgsNotEnought() as e:
             return e
         except CustomAttributeError() as e:

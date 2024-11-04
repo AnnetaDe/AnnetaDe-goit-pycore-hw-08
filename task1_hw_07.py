@@ -171,7 +171,12 @@ class AddressBook:
         record = self.find_record(name)
         if record:
             record.add_phone(phone)
-            print(f"Updated record: {record}")
+            return record
+
+    def change_alias(self, name, alias):
+        record = self.find_record(name)
+        if record:
+            record.change_phone_alias(alias)
             return record
 
     def prompt_add_new_record(self, name):
@@ -207,26 +212,13 @@ class AddressBook:
             print(f"Updated record: {record}")
             return record
 
-    def prompt_action(self, record):
-        if record:
-            action = input(
-                f"{record.name.value} found. What do you want to do? "
-                "(add phone, delete record, exit,change phone) (a/d/e/c): "
-            )
-            if action == 'a':
-                return self.prompt_add_new_phone(record)
-            elif action == 'd':
-                return self.delete_record(record.name.value)
-
-            elif action == 'e':
-                return "Okay. Let me know if you need further assistance."
-
     def find_record(self, name):
         print(f"Searching for {name} in records...")
         for record in self.records:
             if record.name.value == name:
                 return record
-            return self.prompt_add_new_record(name)
+            return None
+        print(f"No record found for {name}")
 
     def show_record_phones(self, name):
         record = self.find_record(name)
@@ -252,10 +244,10 @@ class AddressBook:
             record.show_birthday()
             return record
 
-    def change_record_name(self, name):
+    def change_record_name(self, name, new_name):
         record = self.find_record(name)
         if record:
-            new_name = input("Enter new name: ")
+            new_name = name
             record.change_record_name(new_name)
             return record
 
@@ -265,22 +257,6 @@ class AddressBook:
             self.records.remove(record)
             print(f"Record deleted for {name}")
         return record
-
-    # def change_record(self, name=None, phone=None):
-        for record in self.records:
-            if record.name.value == name:
-                print('rectocha', record)
-                for phone in record.phones:
-                    print(phone)
-
-            if record.name.value == name:
-                print("change it", record)
-
-                change_action = input("what to change? (n/p)")
-                if change_action == 'n':
-                    print(record.name.value)
-                elif change_action == 'p':
-                    print(record.phones)
 
     def show_birthdays(self):
         upcoming_week_birthdays = []
@@ -306,12 +282,7 @@ class AddressBook:
                         'congratulation_date': datetime.strftime(congratulation_date, '%Y.%m.%d')
                     }
                     upcoming_week_birthdays.append(person_to_greet)
-
-        if upcoming_week_birthdays:
-            print("Upcoming birthdays:", upcoming_week_birthdays)
-        else:
-            print("No birthdays in the upcoming week.")
-        return upcoming_week_birthdays
+        return upcoming_week_birthdays if upcoming_week_birthdays else "No birthdays in the upcoming week."
 
     def add_birthday(self, name, birthday):
         record = self.find_record(name)
